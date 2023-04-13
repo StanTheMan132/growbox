@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "exampleApp",
+    "koelkast",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,8 +41,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
+    "django_filters",
     "rest_framework",
+    "django_celery_beat"
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -133,3 +139,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # change to https://app.example.com in production settings
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+
+
+#CELERY
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+
+CELERY_BEAT_SCHEDULE = {
+    'Grow_light_schedule': {
+        'task': 'koelkast.tasks.task_update',
+        'schedule': 10,
+        'args': {2},
+    }
+}
+
